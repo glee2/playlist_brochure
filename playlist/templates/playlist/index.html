@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/audio-player.css">
+
+  <style>
+	body{
+	  padding-top: 2rem;
+	  padding-bottom: 2rem;
+	}
+	.panel-wrapper{
+	  position: absolute;
+	  top: 200px;
+	  left: 150px;
+	}
+	.playlist{
+	  width: 450px;
+	  max-height: 500px;
+	  margin-bottom: 10px;
+	  overflow: scroll;
+	  -webkit-overflow-scrolling: touch;
+	  position: relative;
+	}
+	.carouselContainer{
+	  position: absolute;
+	  height: 750px;
+	  width: 1000px;
+	  top: 150px;
+	  left: 700px;
+	}
+	.carousel-indicators{
+	  bottom: -50px;
+	}
+	.chartContainer{
+	  position: relative;
+	  left: 100px;
+	}
+	.carousel-control-prev{
+	  max-height: 50px;
+	  max-width: 50px;
+	  top: 270px;
+	  left: 10px;
+	}
+	.carousel-control-next{
+	  max-height: 50px;
+	  max-width: 50px;
+	  top: 270px;
+	  right: 10px;
+	}
+	.tag-cloud a.size-1 { font-size: 1.1em }
+	.tag-cloud a.size-2 { font-size: 1.2em }
+	.tag-cloud a.size-3 { font-size: 1.3em }
+	.tag-cloud a.size-4 { font-size: 1.4em }
+	.tag-cloud a.size-5 { font-size: 1.5em }
+	.tag-cloud a.size-6 { font-size: 1.6em }
+	.tag-cloud a.size-7 { font-size: 1.7em }
+	.tag-cloud a.size-8 { font-size: 1.8em }
+	.tag-cloud a.size-9 { font-size: 1.9em }
+	.tag-cloud a.size-10 { font-size: 2em }
+
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+<div class="container">
+  <div class="panel panel-primary panel-wrapper">
+	<div class="card">
+	  <div class="card-body bg-secondary text-white">
+	    <div class="panel-heading" style="text-align:center;"><h3 class="panel-title">Music Player</h3></div>
+	  </div>
+	</div>
+	<div class="card playlist">
+	  {% if song_list %}
+	  <ul class="list-group">
+		<span class="border border-dark">
+		  {% for song in song_list %}
+		  <li class="list-group-item list-group-item-action">{{song}}</li>
+			{% endfor %}
+		</span>
+	  </ul>
+	  {% endif %}
+	</div>
+	<div class="card">
+	  <div class="card-body bg-info text-white" style="text-align:center;font-size:150%;">
+		{{ recommended }}
+	  </div>
+	</div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="carouselContainer bg-dark text-white">
+	<div style="text-align:center; padding:20px;">
+	  <h2>Summary of the playlist</h2>
+	</div>
+	<div id="myCarousel" class="carousel slide" data-interval="false">
+	  <!-- indicators -->
+	  <ol class="carousel-indicators">
+		<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+		<li data-target="#myCarousel" data-slide-to="1"></li>
+		<li data-target="#myCarousel" data-slide-to="2"></li>
+	  </ol>
+
+	  <!-- wrapper for slides -->
+	  <div class="carousel-inner">
+		<div class="carousel-item active">
+		  <div class="chartContainer">
+			{{ lineChart|safe }}
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="chartContainer">
+			{{ gaugeChart|safe }}
+		  </div>
+		</div>
+		<div class="carousel-item">
+		  <div class="chartContainer" id="ImageLoad">
+			{% load static %}
+			<img src="{% static "temp.png" %}" style="height:600px; width:800px;"></img>
+		  </div>
+		</div>
+	  </div>
+
+	  <!-- controls -->
+	  <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+		<span class="carousel-control-prev-icon"></span>
+		<span class="sr-only">Previous</span>
+	  </a>
+	  <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+		<span class="carousel-control-next-icon"></span>
+		<span class="sr-only">Next</span>
+	  </a>
+	</div>
+  </div>
+</div>
+
+<div class="container" style="margin-top:130px;margin-left:140px;">
+  Sample list select (1~1000) 
+  <input type="text" id="list_num" style="margin-left:15px;"></input>
+  <input type="submit" value="RUN" id="SampleRUN"></input>
+</div>
+
+<script>
+  $(document).ready(function(){
+	  $('#SampleRUN').click(function(){
+		$.ajax({
+		  url: '',
+		  data:{'list_num':$('#list_num').val()},
+		  success:function(data){
+			$('body').html(data);
+		  }
+		});
+	  });
+  });
+</script>
+
+<script>
+  $(function(){
+	console.log('ready');
+
+	$('.list-group li').click(function(e){
+	  e.preventDefault()
+
+	  $that = $(this);
+	  $('.list-group').find('li').removeClass('active');
+	  $that.addClass('active');
+	});
+  })
+</script>
+<script type="text/javascript" src="https://kozea.github.com/pygal.js/latest/pygal-tooltips.min.js"></script>
+
+</body>
+</html>
+

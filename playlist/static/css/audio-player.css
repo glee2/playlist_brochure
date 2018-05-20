@@ -1,0 +1,41 @@
+.audio-player {
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.audio-player i {
+  font-size: 12vw;
+}
+#next-button {
+    font-size: 10vw;
+}
+
+@media screen and (min-width:300px) {
+  .audio-player i {
+    font-size: 24px;
+  }
+  #next-button {
+    font-size: 24px;
+  }
+}
+
+#now-playing {
+  display: none;
+}
+
+.progress {
+  overflow: visible;
+}
+
+li.active:before {
+  font-family: "Material Icons";
+  content: "\e037";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-size: 1.5rem;
+}
+
+.ui-slider-handle {
+  border-radius: 50%;
+}

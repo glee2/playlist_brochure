@@ -1,0 +1,15 @@
+.playlist-list {
+  float: left;
+  margin: 10px;
+  position: relative;
+  width: 20px;
+  max-height: 1000px;
+  background: #eee;
+}
+
+.list-group{
+  max-height: 300px;
+  margin-bottom: 10px;
+  overflow:scroll;
+  -webkit-overflow-scrolling:touch;
+}
