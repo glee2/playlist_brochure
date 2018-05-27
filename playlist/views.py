@@ -287,7 +287,7 @@ def stats(dat):
 def recommend(query, ranks):
     existing = query
     q = existing[-1]
-    out = '1356'
+    out = str(np.random.randint(3028))
     flag = 0
     for row in ranks:
         if q in row:
