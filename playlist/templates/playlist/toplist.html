@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <title>Playlist Brochure</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/audio-player.css">
+
+  <style>
+	body{
+	  padding-top: 2rem;
+	  padding-bottom: 2rem;
+	}
+	.panel-wrapper{
+	  position: absolute;
+	  top: 20px;
+	  left: 50px;
+	}
+	.panel-wrapper2{
+	  position: absolute;
+	  top: 20px;
+	  left: 600px;
+	}
+	.panel-wrapper3{
+	  position: absolute;
+	  top: 550px;
+	  left: 600px;
+	}
+	.searchlist{
+	  width: 550px;
+	  max-height: 300px;
+	  overflow: scroll;
+	  -webkit-overflow-scrolling: touch;
+	  position: relative;
+	}
+	.playlist{
+	  width: 450px;
+	  max-height: 1200px;
+	  margin-bottom: 10px;
+	  overflow: scroll;
+	  -webkit-overflow-scrolling: touch;
+	  position: relative;
+	}
+	.adding{
+	  position: absolute;
+	  bottom: -114px;
+	  left: 1065px;
+	}
+	.addinglist{
+	  position: relative;
+	  width: 550px;
+	  max-height: 300px;
+	  overflow: scroll;
+	  -webkit-overflow-scrolling: touch;
+	}
+	.return{
+	  position: absolute;
+	  width: 200px;
+	  bottom: -300px;
+	  left: 800px;
+	}
+	.searchstyle{
+	  position: relative;
+	  top: 7px;
+	  width: 430px;
+	}
+	.searchbtnstyle{
+	  position: absolute;
+	  top: 90px;
+	  left: 440px;
+	  width: 100px;
+	}
+
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+<div class="container">
+  <div class="panel panel-primary panel-wrapper">
+	<div class="card">
+	  <div class="card-body bg-primary text-white">
+	    <div class="panel-heading" style="text-align:center;"><h3 class="panel-title">TOP 100</h3></div>
+	  </div>
+	</div>
+	<div class="card playlist">
+	  {% if tops %}
+	  <ul class="list-group">
+		<span class="border border-dark">
+		  {% for song in tops %}
+		  <li class="list-group-item list-group-item-action">{{song}}</li>
+			{% endfor %}
+		</span>
+	  </ul>
+	  {% endif %}
+	</div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="panel panel-primary panel-wrapper2">
+	<div class="card">
+	  <div class="card-body bg-secondary text-white">
+	    <div class="panel-heading" style="text-align:center;"><h3 class="panel-title">Search</h3></div>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <input type="text" class="form-control searchstyle" id="searchtext">
+	  <button type="button" class="btn btn-outline-primary searchbtnstyle" id="searchbtn">
+		SEARCH
+	  </button>
+	</div>
+	<div class="card searchlist" id="searchcontainerWrap">
+	  <div id="searchcontainer">
+	  {% if searchitems %}
+	  <ul class="list-group">
+		<span class="border border-dark">
+		  {% for song in searchitems %}
+		  <li class="list-group-item list-group-item-action">{{song}}</li>
+			{% endfor %}
+		</span>
+	  </ul>
+	  {% endif %}
+	  </div>
+	</div>
+  </div>
+</div>
+
+<div class="container" style="margin-left:600px; margin-top:1000px;width:480px">
+  <div class="alert alert-info" role="alert" id="addtrack">
+	Song to be added 
+  </div>
+</div>
+
+<div class="container adding">
+  <button type="button" class="btn btn-outline-success" id="addlist">
+	<h5>ADD</h5>
+  </button>
+</div>
+
+<div class="container">
+  <div class="panel panel-primary panel-wrapper3">
+	<div class="card">
+	  <div class="card-body bg-light text-dark">
+	    <div class="panel-heading" style="text-align:center;"><h3 class="panel-title">Adding list</h3></div>
+	  </div>
+	</div>
+	<div class="card addinglist">
+	  <ul class="list-group" id="AddingList">
+		<span class="border border-dark">
+		</span>
+	  </ul>
+	</div>
+  </div>
+</div>
+
+<div class="container return">
+	<button type="button" class="btn btn-dark" id="returnbtn">
+	  <h5>Return to main</h5>
+	</button>
+</div>
+
+<script>
+  arr = [];
+  check = 0;
+
+  $(document).ready(function(){
+	$('#returnbtn').click(function(){
+	  $.ajax({
+		url: '/',
+		type: 'POST',
+		data:{ 'sendlist' : arr },
+		success: function(data){
+		  $('body').html(data);
+		}
+	  });
+	});
+  });
+
+  $(document).ready(function(){
+	$('#searchbtn').click(function(){
+	  localStorage.setItem('myObject', JSON.stringify(arr));
+	  $.ajax({
+		url: '/toplist',
+		type: 'POST',
+     	data:{ 'searchitem' : $('#searchtext').val() },
+		success: function(data){
+		  $('body').html(data);
+		  arr = JSON.parse(localStorage.getItem('myObject'));
+		  for(var i=check; i<arr.length; i++){
+		  	$('#AddingList').append('<span class="border border-dark"><li class="list-group-item list-group-item-action">'+arr[i]+'</li></span>');
+		  }
+		  check = check + 1;
+		}
+	  });
+	});
+  });
+
+  $(document).ready(function(){
+	  $('#addlist').click(function(){
+		var listGroup = document.getElementById("AddingList");
+		var list = document.createElement("li");
+		var txt = $('#addtrack').html();
+		$('#AddingList').append('<span class="border border-dark"><li class="list-group-item list-group-item-action">'+txt+'</li></span>');
+		arr.push(txt);
+//		for(var i=check; i<arr.length; i++){
+//		  $('#AddingList').append('<span class="border border-dark"><li class="list-group-item list-group-item-action">'+arr[i]+'</li></span>');
+//		}
+		check = check + 1;
+	  });
+  });
+
+  $(function(){
+	$('.list-group li').click(function(e){
+	  e.preventDefault()
+	  $that = $(this);
+	  $('.list-group').find('li').removeClass('active');
+	  $that.addClass('active');
+	  $('#addtrack').text($that.html());
+	});
+  })
+</script>
+<script type="text/javascript" src="https://kozea.github.com/pygal.js/latest/pygal-tooltips.min.js"></script>
+
+</body>
+</html>
+
