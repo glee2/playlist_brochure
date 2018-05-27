@@ -87,8 +87,8 @@ def index(request):
             list_num = 43
     
         playlists = np.array(list(csv.reader(open("../../dataset/yes_small/train.txt", 'r'), delimiter=str(' '))))[2:]
-#        seq_list = list(csv.reader(open("../../dataset/yes_small/freq_songs.csv", 'r')))
-        seq_list=[]
+        seq_list = list(csv.reader(open("../../dataset/yes_small/freq_songs.csv", 'r')))
+#        seq_list=[]
     
         ind = playlists[list_num-1][:-1]
     
@@ -236,9 +236,9 @@ def summary(data, data_origin, freq_songs):
     image.save("playlist/static/temp.png")
     im = Image.open("playlist/static/temp.png")
 
-    recommended = data_origin[np.random.randint(data_origin.shape[0])]
-#    rec_ind = recommend(data[:,0], freq_songs)
-#    recommended = data_origin[np.where(data_origin[:,0]==rec_ind)].reshape(-1)
+#    recommended = data_origin[np.random.randint(data_origin.shape[0])]
+    rec_ind = recommend(data[:,0], freq_songs)
+    recommended = data_origin[np.where(data_origin[:,0]==rec_ind)].reshape(-1)
     recommended = str(recommended[3])+" - "+str(recommended[4])
 
     result = { 'song_list' : tracks, 'lineChart'  : line_chart.generate(line), 'gaugeChart' : gauge_chart.generate(gauge), \
